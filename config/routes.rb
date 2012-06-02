@@ -1,9 +1,9 @@
 ClapApp::Application.routes.draw do
-  resources :users
-
+  resources :user
   resources :movies, :defaults => { :format => 'json' }
-  resources :users
+  match 'user/:id' => "Movies#show", :format => 'json'
   match 'movie/like/:id' => 'Movies#like'
+  match 'movie/:id' => "Movies#show", :format => 'json'
   match 'movie/dislike/:id' => 'Movies#dislike'
   match 'movie/review/:id' => 'Movies#review'
 

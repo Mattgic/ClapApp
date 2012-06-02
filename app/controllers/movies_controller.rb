@@ -40,16 +40,16 @@ class MoviesController < ApplicationController
 
     @movie = Movie.find(params[:id])
 	response = {}
-	@alloCineJson = JSON.parse(open("http://api.allocine.fr/rest/v3/movie?partner=YW5kcm9pZC12M3M&format=json&filter=movie&profile=small&code="+ @movie.alloCineCode.to_s, :proxy => @@proxyUTC).read)["movie"]
+	@alloCineJson = JSON.parse(open("http://api.allocine.fr/rest/v3/movie?partner=YW5kcm9pZC12M3M&format=json&filter=movie&profile=small&mediafmt=mp4&code="+ @movie.alloCineCode.to_s, :proxy => @@proxyUTC).read)["movie"]
 	response["title"]=@alloCineJson["title"]
 	response["directors"]=@alloCineJson["castingShort"]["directors"]
 	response["actors"]=@alloCineJson["castingShort"]["actors"]
 	response["synopsisShort"]=@alloCineJson["synopsisShort"]
 	response["releaseDate"]=@alloCineJson["release"]["releaseDate"]
 	response["poster"]=@alloCineJson["poster"]["href"]
-	response["trailer"]=@alloCineJson["trailer"]["href"]
 	response["runtime"]=@alloCineJson["runtime"]
-	
+	@trailerInfoJson = JSON.parse(open("http://api.allocine.fr/rest/v3/media?format=json&partner=aXBhZC12MQ&profile=small&mediafmt=mp4&code="+ @alloCineJson["trailer"]["code"].to_s).read)["media"]
+	response["trailer"]=@trailerInfoJson["rendition"][0]["href"]
 
     respond_to do |format|
       format.html # show.html.erb
