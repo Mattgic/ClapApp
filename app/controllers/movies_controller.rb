@@ -11,18 +11,17 @@ class MoviesController < ApplicationController
 	response = {}
 	movies = []
 	@alloCineJson["movie"].each{ |mv|
-		movie = Movie.create(:alloCineCode => mv["code"], :title=>mv["title"])
-		movieHash = {}
-		if movie
-			movieHash["id"] = movie.id
-		else
-			movieHash["id"] = Movie.where(:alloCineCode => mv["code"]).id
+		movie=Movie.where(:alloCineCode => mv["code"]).first
+		if !movie
+			movie = Movie.create(:alloCineCode => mv["code"], :title=>mv["title"])
 		end
+		movieHash = {}
+		movieHash["id"] = movie.id
 		movieHash["code"] = movie["title"]
 		movieHash["code"] = mv["title"]
 		movieHash["title"] = mv["title"]
 		movieHash["poster"] = mv["poster"]["href"]
-		movies << movie
+		movies << movieHash
 	}
 	response["movies"] = movies
 
